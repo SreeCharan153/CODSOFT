@@ -1,74 +1,33 @@
 let display = document.getElementById('display');
-let currentOperand = '';
-let previousOperand = '';
-let operation = null;
 
-function appendNumber(number) {
-    if (currentOperand === '0') {
-        currentOperand = number.toString();
+// Append value to the display
+function appendValue(value) {
+    if (display.innerText === '0') {
+        display.innerText = value;
     } else {
-        currentOperand += number.toString();
+        display.innerText += value;
     }
-    updateDisplay();
 }
 
-function setOperation(op) {
-    if (currentOperand === '') return;
-    if (previousOperand !== '') {
-        calculate();
-    }
-    operation = op;
-    previousOperand = currentOperand;
-    currentOperand = '';
-}
-
-function calculate() {
-    let result;
-    const prev = parseFloat(previousOperand);
-    const current = parseFloat(currentOperand);
-    if (isNaN(prev) || isNaN(current)) return;
-    switch (operation) {
-        case '+':
-            result = prev + current;
-            break;
-        case '-':
-            result = prev - current;
-            break;
-        case '*':
-            result = prev * current;
-            break;
-        case '/':
-            result = prev / current;
-            break;
-        default:
-            return;
-    }
-    currentOperand = result;
-    operation = null;
-    previousOperand = '';
-    updateDisplay();
-}
-
+// Clear the display
 function clearDisplay() {
-    currentOperand = '';
-    previousOperand = '';
-    operation = null;
-    updateDisplay();
+    display.innerText = '0';
 }
 
-function updateDisplay() {
-    display.innerText = currentOperand || '0';
-}
-
-document.addEventListener('keydown', (event) => {
-    const key = event.key;
-    if (!isNaN(key)) {
-        appendNumber(key);
-    } else if (key === '+' || key === '-' || key === '*' || key === '/') {
-        setOperation(key);
-    } else if (key === 'Enter' || key === '=') {
-        calculate();
-    } else if (key === 'c' || key === 'C') {
-        clearDisplay();
+// Delete the last character from the display
+function deleteLast() {
+    if (display.innerText.length === 1) {
+        display.innerText = '0';
+    } else {
+        display.innerText = display.innerText.slice(0, -1);
     }
-});
+}
+
+// Calculate the result using eval()
+function calculateResult() {
+    try {
+        display.innerText = eval(display.innerText);
+    } catch (error) {
+        display.innerText = 'Error';
+    }
+}
